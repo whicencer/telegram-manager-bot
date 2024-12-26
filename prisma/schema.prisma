@@ -1,0 +1,61 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model TelegramUser {
+  id           String   @id @default(cuid())
+  telegramId   BigInt   @unique
+  username     String?  @unique
+  bots         Bot[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("telegram_users")
+}
+
+model Bot {
+  id           BigInt   @unique
+  token        String   @unique
+  username     String   @unique
+  userId       String
+  telegramUser TelegramUser @relation(fields: [userId], references: [id])
+  channels     Channel[]
+  settings     BotSettings?
+
+  @@map("bots")
+}
+
+model Channel {
+  id   BigInt   @unique
+  title        String
+  botId        BigInt
+  bot          Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  
+  @@map("channels")
+}
+
+model  BotSettings {
+  id           String   @id @default(cuid())
+  botId        BigInt   @unique
+  bot          Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  welcomeMessageSettings  WelcomeMessageSettings?
+
+  @@map("bot_settings")
+}
+
+model WelcomeMessageSettings {
+  id                   String   @id @default(cuid())
+  settingsId           String   @unique
+  settings             BotSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+  welcomeMessageText   String @default("Welcome to the channel!")
+  welcomeMessageDelay  Int    @default(0)  // Delay in seconds
+  welcomeMessageAutoDeleteEnabled Boolean @default(false)
+  welcomeMessageAutoDelete Int @default(5) // Auto-delete time in minutes
+
+  @@map("welcome_message_settings")
+}
