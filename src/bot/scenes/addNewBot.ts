@@ -37,7 +37,8 @@ addNewBotScene.on("text", async (ctx) => {
     await ctx.reply(`Бот ${newBot.username} успешно создан!`);
     await ctx.scene.enter(SceneNames.MY_BOTS_SCENE);
   } catch (error: Error | any) {
-    ctx.reply(`Ошибка при создании бота: ${error?.message}`);
+    ctx.reply(`Ошибка при создании бота`);
+    console.error(error);
   }
 });
 

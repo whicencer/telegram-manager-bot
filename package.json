@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "bot:dev": "ts-node-dev --respawn --transpile-only src/bots/bot.ts",
+    "bot:dev": "ts-node-dev --respawn --transpile-only src/bot/bot.ts",
     "server:dev": "ts-node-dev --respawn --transpile-only app.ts"
   },
   "keywords": [],
@@ -30,7 +30,8 @@
   },
   "_moduleAliases": {
     "database": "src/database",
-    "bots": "src/bots",
+    "middleware": "src/middleware",
+    "bot": "src/bot",
     "constants": "src/constants",
     "routes": "src/routes",
     "services": "src/services",

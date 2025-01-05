@@ -20,29 +20,33 @@ deleteBotScene.enter(async (ctx) => {
 
 deleteBotScene.action("sure_delete", async (ctx) => {
   // @ts-ignore
-  const { bot } = ctx.scene.state;
+  const botId = ctx.session.botId;
+  const bot = await prisma.bot.findUnique({
+    where: { id: botId }
+  });
 
-  if (!bot) {
-    await ctx.reply("Cannot find bot");
+  if (!bot?.token) {
+    await ctx.reply("Токен бота не найден, удаление невозможно.");
     return;
   }
 
-  const currentBotApi = new TelegramAPI(bot.token);
+  const currentBotApi = new TelegramAPI(bot?.token);
 
   try {
     currentBotApi.deleteWebhook();
     await prisma.bot.delete({
-      where: { id: bot.id }
+      where: { id: botId }
     });
+    ctx.deleteMessage(ctx.msg.message_id);
 
-    await ctx.reply(`Бот ${bot.username} был успешно удалён`);
+    await ctx.reply(`Бот ${bot?.username} был успешно удалён`);
     await ctx.scene.enter(SceneNames.MY_BOTS_SCENE);
   } catch (error) {
     console.error(error);
   }
 });
 
-deleteBotScene.action("cancel_delete", async (ctx) => {  
+deleteBotScene.action("cancel_delete", async (ctx) => {
   await ctx.deleteMessage(ctx.msg.message_id);
-  await ctx.scene.enter(SceneNames.MY_BOTS_SCENE);
+  await ctx.scene.enter(SceneNames.BOT_DETAILS_SCENE);
 });

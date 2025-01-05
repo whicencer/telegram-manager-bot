@@ -35,9 +35,8 @@ myBots.action(/bot_(\d+)/, async (ctx) => {
   ctx.deleteMessage(ctx.msg.message_id);
   
   const botId = ctx.match[1];
-  const bot = await prisma.bot.findUnique({
-    where: { id: Number(botId) }
-  });
+  // @ts-ignore
+  ctx.session.botId = botId;
 
-  await ctx.scene.enter(SceneNames.BOT_DETAILS_SCENE, { bot });
+  await ctx.scene.enter(SceneNames.BOT_DETAILS_SCENE, { botId });
 });

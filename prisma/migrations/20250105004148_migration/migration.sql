@@ -25,23 +25,27 @@ CREATE TABLE "channels" (
 );
 
 -- CreateTable
-CREATE TABLE "bot_settings" (
+CREATE TABLE "greeting_entities" (
     "id" TEXT NOT NULL,
-    "botId" BIGINT NOT NULL,
+    "greetingId" TEXT NOT NULL,
+    "offset" INTEGER NOT NULL,
+    "length" INTEGER NOT NULL,
+    "type" TEXT NOT NULL,
+    "url" TEXT,
 
-    CONSTRAINT "bot_settings_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "greeting_entities_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "welcome_message_settings" (
+CREATE TABLE "greetings" (
     "id" TEXT NOT NULL,
-    "settingsId" TEXT NOT NULL,
-    "welcomeMessageText" TEXT NOT NULL DEFAULT 'Welcome to the channel!',
-    "welcomeMessageDelay" INTEGER NOT NULL DEFAULT 0,
-    "welcomeMessageAutoDeleteEnabled" BOOLEAN NOT NULL DEFAULT false,
-    "welcomeMessageAutoDelete" INTEGER NOT NULL DEFAULT 5,
+    "botId" BIGINT NOT NULL,
+    "greetingText" TEXT NOT NULL DEFAULT 'Hello!',
+    "greetingDelay" INTEGER NOT NULL DEFAULT 0,
+    "greetingAutoDeleteEnabled" BOOLEAN NOT NULL DEFAULT false,
+    "greetingAutoDelete" INTEGER NOT NULL DEFAULT 5,
 
-    CONSTRAINT "welcome_message_settings_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "greetings_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -62,12 +66,6 @@ CREATE UNIQUE INDEX "bots_username_key" ON "bots"("username");
 -- CreateIndex
 CREATE UNIQUE INDEX "channels_id_key" ON "channels"("id");
 
--- CreateIndex
-CREATE UNIQUE INDEX "bot_settings_botId_key" ON "bot_settings"("botId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "welcome_message_settings_settingsId_key" ON "welcome_message_settings"("settingsId");
-
 -- AddForeignKey
 ALTER TABLE "bots" ADD CONSTRAINT "bots_userId_fkey" FOREIGN KEY ("userId") REFERENCES "telegram_users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -75,7 +73,7 @@ ALTER TABLE "bots" ADD CONSTRAINT "bots_userId_fkey" FOREIGN KEY ("userId") REFE
 ALTER TABLE "channels" ADD CONSTRAINT "channels_botId_fkey" FOREIGN KEY ("botId") REFERENCES "bots"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "bot_settings" ADD CONSTRAINT "bot_settings_botId_fkey" FOREIGN KEY ("botId") REFERENCES "bots"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "greeting_entities" ADD CONSTRAINT "greeting_entities_greetingId_fkey" FOREIGN KEY ("greetingId") REFERENCES "greetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "welcome_message_settings" ADD CONSTRAINT "welcome_message_settings_settingsId_fkey" FOREIGN KEY ("settingsId") REFERENCES "bot_settings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "greetings" ADD CONSTRAINT "greetings_botId_fkey" FOREIGN KEY ("botId") REFERENCES "bots"("id") ON DELETE CASCADE ON UPDATE CASCADE;

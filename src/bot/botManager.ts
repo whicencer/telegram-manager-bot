@@ -20,19 +20,7 @@ class BotManager {
         id: botInfo.id,
         token,
         userId,
-        username: botInfo.username,
-        settings: {
-          create: {
-            welcomeMessageSettings: {
-              create: {
-                welcomeMessageText: 'Добро пожаловать в наш канал!',
-                welcomeMessageAutoDelete: 5,
-                welcomeMessageAutoDeleteEnabled: false,
-                welcomeMessageDelay: 0
-              }
-            }
-          }
-        }
+        username: botInfo.username
       },
     });
 
@@ -52,24 +40,6 @@ class BotManager {
       }
     });
     return channel;
-  }
-
-  async updateWelcomeMessageText(botId: number, message: string) {
-    const settings = await prisma.botSettings.findUnique({
-      where: { botId },
-      include: { welcomeMessageSettings: true },
-    });
-
-    if (!settings) {
-      throw new Error('Настройки бота не найдены.');
-    }
-
-    const updatedWelcomeMessageSettings = await prisma.welcomeMessageSettings.update({
-      where: { settingsId: settings.id },
-      data: { welcomeMessageText: message },
-    });
-
-    return updatedWelcomeMessageSettings.welcomeMessageText;
   }
 }
 

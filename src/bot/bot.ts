@@ -8,6 +8,10 @@ import { SceneNames } from "constants/Scenes";
 import { myBots } from "./scenes/myBots";
 import { deleteBotScene } from './scenes/deleteBot';
 import { botDetailsScene } from './scenes/botDetails';
+import { botGreetingsScene } from './scenes/greetings/botGreetings';
+import { createGreetingScene } from './scenes/greetings/createGreeting';
+import { greetindDetailsScene } from './scenes/greetings/greetingDetails';
+import { editGreetingPictureScene } from './scenes/greetings/editGreetingPicture';
 
 (() => {
 
@@ -16,7 +20,16 @@ import { botDetailsScene } from './scenes/botDetails';
   }
 
   const bot = new Telegraf<IBotContext>(process.env.MAIN_BOT_TOKEN);
-  const stage = new Scenes.Stage<IBotContext>([addNewBotScene, myBots, deleteBotScene, botDetailsScene]);
+  const stage = new Scenes.Stage<IBotContext>([
+    addNewBotScene,
+    myBots,
+    deleteBotScene,
+    botDetailsScene,
+    botGreetingsScene,
+    createGreetingScene,
+    greetindDetailsScene,
+    editGreetingPictureScene,
+  ]);
 
   bot.use(session());
   bot.use(stage.middleware());

@@ -25,7 +25,7 @@ model Bot {
   userId       String
   telegramUser TelegramUser @relation(fields: [userId], references: [id])
   channels     Channel[]
-  settings     BotSettings?
+  greetings    Greetings[]
 
   @@map("bots")
 }
@@ -39,23 +39,28 @@ model Channel {
   @@map("channels")
 }
 
-model  BotSettings {
-  id           String   @id @default(cuid())
-  botId        BigInt   @unique
-  bot          Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
-  welcomeMessageSettings  WelcomeMessageSettings?
+model GreetingEntity {
+  id          String   @id @default(cuid())
+  greetingId  String
+  greeting    Greetings @relation(fields: [greetingId], references: [id], onDelete: Cascade)
+  offset      Int
+  length      Int
+  type        String
+  url         String?
 
-  @@map("bot_settings")
+  @@map("greeting_entities")
 }
 
-model WelcomeMessageSettings {
-  id                   String   @id @default(cuid())
-  settingsId           String   @unique
-  settings             BotSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
-  welcomeMessageText   String @default("Welcome to the channel!")
-  welcomeMessageDelay  Int    @default(0)  // Delay in seconds
-  welcomeMessageAutoDeleteEnabled Boolean @default(false)
-  welcomeMessageAutoDelete Int @default(5) // Auto-delete time in minutes
+model Greetings {
+  id                    String           @id @default(cuid())
+  botId                 BigInt
+  bot                   Bot              @relation(fields: [botId], references: [id], onDelete: Cascade)
+  text                  String           @default("Hello!")
+  delay                 Int              @default(0)  // Delay in seconds
+  isAutoDeleteEnabled   Boolean          @default(false)
+  autoDeleteDelay       Int              @default(5)  // Auto-delete time in minutes
+  imageUrl              String?
+  entities      GreetingEntity[]
 
-  @@map("welcome_message_settings")
+  @@map("greetings")
 }

@@ -35,14 +35,27 @@ export class TelegramAPI {
     }
   }
 
-  async sendMessage(chatId: string, text: string) {
+  async sendMessage(chatId: string, text: string, entities?: any[]) {
     try {
       await axios.post(`${this.apiUrl}/sendMessage`, {
         chat_id: chatId,
         text,
+        entities
       });
     } catch (error) {
       console.error(`Telegram API Error (sendMessage): ${error}`);
+    }
+  }
+
+  async sendPhoto(chatId: string, photo: string, caption?: string) {
+    try {
+      await axios.post(`${this.apiUrl}/sendPhoto`, {
+        chat_id: chatId,
+        photo,
+        caption
+      });
+    } catch (error) {
+      console.error(`Telegram API Error (sendPhoto): ${error}`);
     }
   }
 
@@ -53,6 +66,16 @@ export class TelegramAPI {
       });
     } catch (error) {
       console.error(`Telegram API Error (leaveChat): ${error}`);
+    }
+  }
+  
+  async getFile(fileId: string) {
+    try {
+      const response = await axios.get(`${this.apiUrl}/getFile?file_id=${fileId}`);
+      return response.data.result;
+    } catch (error) {
+      console.error(`Telegram API Error (getFile): ${error}`);
+      throw error;
     }
   }
 
