@@ -7,4 +7,5 @@ export enum SceneNames {
   CREATE_GREETING_SCENE = "create_greeting",
   GREETING_DETAILS_SCENE = "greeting_details",
   EDIT_GREETING_PICTURE_SCENE = "edit_greeting_picture",
+  ADD_BUTTON_SCENE = "add_button",
 }
