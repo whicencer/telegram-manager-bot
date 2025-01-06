@@ -24,6 +24,7 @@ greetindDetailsScene.enter(checkGreetingId, async (ctx) => {
         [{ text: "📝 Изменить текст", callback_data: "edit_greeting" }],
         // [{ text: "🖼 Изменить изображение", callback_data: "edit_greeting_picture" }],
         [{ text: "🆙 Добавить кнопку", callback_data: "add_button" }],
+        [{ text: "❌ Удалить все кнопки", callback_data: "delete_buttons" }],
         [{ text: "🗑️ Удалить", callback_data: "delete_greeting" }],
         [{ text: "⬅️ Назад", callback_data: "back" }],
       ]
@@ -46,6 +47,18 @@ greetindDetailsScene.enter(checkGreetingId, async (ctx) => {
   });
   // @ts-ignore
   ctx.scene.state.msgId = msg.message_id;
+});
+
+greetindDetailsScene.action("delete_buttons", async (ctx) => {
+  // @ts-ignore
+  const { greetingId } = ctx.scene.state;
+
+  await prisma.greetingButton.deleteMany({ where: { greetingId } });
+
+  // @ts-ignore
+  deleteMessages(ctx, [ctx.msg?.message_id, ctx.scene.state?.msgId, ctx.scene.state?.msgWithPhotoId]);
+  await ctx.reply("Кнопки успешно удалены");
+  await ctx.scene.reenter();
 });
 
 greetindDetailsScene.action("add_button", async (ctx) => {

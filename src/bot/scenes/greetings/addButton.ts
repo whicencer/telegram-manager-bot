@@ -1,6 +1,7 @@
 import { SceneNames } from "constants/Scenes";
 import { Scene } from "../scene";
 import { prisma } from "database/client";
+import { deleteMessages } from "utils/deleteMessages";
 
 enum AddButtonSteps {
   BUTTON_TEXT = 0,
@@ -10,9 +11,21 @@ enum AddButtonSteps {
 export const addButtonScene = new Scene(SceneNames.ADD_BUTTON_SCENE);
 
 addButtonScene.enter(async (ctx) => {
-  await ctx.reply("Введите текст кнопки");
+  await ctx.reply("Введите текст кнопки", {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: "Отмена", callback_data: "cancel" }]
+      ]
+    }
+  });
   // @ts-ignore
   ctx.scene.session.currentStep = AddButtonSteps.BUTTON_TEXT;
+});
+
+addButtonScene.action("cancel", async (ctx) => {
+  // @ts-ignore
+  deleteMessages(ctx, [ctx.callbackQuery.message.message_id]);
+  await ctx.scene.enter(SceneNames.GREETING_DETAILS_SCENE);
 });
 
 addButtonScene.on("text", async (ctx) => {
