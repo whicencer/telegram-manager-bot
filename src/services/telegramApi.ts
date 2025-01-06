@@ -35,12 +35,11 @@ export class TelegramAPI {
     }
   }
 
-  async sendMessage(chatId: string, text: string, entities?: any[], options?: any) {
+  async sendMessage(chatId: string, text: string, options?: any) {
     try {
       await axios.post(`${this.apiUrl}/sendMessage`, {
         chat_id: chatId,
         text,
-        entities,
         ...options
       });
     } catch (error) {
