@@ -38,5 +38,5 @@ myBots.action(/bot_(\d+)/, async (ctx) => {
   // @ts-ignore
   ctx.session.botId = botId;
 
-  await ctx.scene.enter(SceneNames.BOT_DETAILS_SCENE, { botId });
+  await ctx.scene.enter(SceneNames.BOT_DETAILS_SCENE);
 });
