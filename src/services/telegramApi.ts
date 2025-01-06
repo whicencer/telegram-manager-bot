@@ -35,12 +35,13 @@ export class TelegramAPI {
     }
   }
 
-  async sendMessage(chatId: string, text: string, entities?: any[]) {
+  async sendMessage(chatId: string, text: string, entities?: any[], options?: any) {
     try {
       await axios.post(`${this.apiUrl}/sendMessage`, {
         chat_id: chatId,
         text,
-        entities
+        entities,
+        ...options
       });
     } catch (error) {
       console.error(`Telegram API Error (sendMessage): ${error}`);
