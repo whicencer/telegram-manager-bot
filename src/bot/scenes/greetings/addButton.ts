@@ -1,7 +1,6 @@
 import { SceneNames } from "constants/Scenes";
 import { Scene } from "../scene";
 import { prisma } from "database/client";
-import { checkGreetingId } from "middleware/checkGreetingId";
 
 enum AddButtonSteps {
   BUTTON_TEXT = 0,

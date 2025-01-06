@@ -48,6 +48,12 @@ greetindDetailsScene.enter(checkGreetingId, async (ctx) => {
   ctx.scene.state.msgId = msg.message_id;
 });
 
+greetindDetailsScene.action("add_button", async (ctx) => {
+  // @ts-ignore
+  deleteMessages(ctx, [ctx.msg?.message_id, ctx.scene.state?.msgId, ctx.scene.state?.msgWithPhotoId]);
+  await ctx.scene.enter(SceneNames.ADD_BUTTON_SCENE);
+});
+
 greetindDetailsScene.action("edit_greeting_picture", async (ctx) => {
   // @ts-ignore
   deleteMessages(ctx, [ctx.msg?.message_id, ctx.scene.state?.msgId, ctx.scene.state?.msgWithPhotoId]);
