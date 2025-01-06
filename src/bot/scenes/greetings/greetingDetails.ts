@@ -2,23 +2,19 @@ import { SceneNames } from "constants/Scenes";
 import { Scene } from "../scene";
 import { prisma } from "database/client";
 import { checkGreetingId } from "middleware/checkGreetingId";
+import { deleteMessages } from "utils/deleteMessages";
 
 export const greetindDetailsScene = new Scene(SceneNames.GREETING_DETAILS_SCENE);
 
 greetindDetailsScene.enter(checkGreetingId, async (ctx) => {
   // @ts-ignore
-  const { greetingId } = ctx.scene.state;
-
-  if (!greetingId) {
-    await ctx.reply("Произошла ошибка при получении данных о приветствии");
-    await ctx.scene.enter(SceneNames.BOT_GREETINGS_SCENE);
-    return;
-  }
+  const greetingId = ctx.session.greetingId;
 
   const currentGreeting = await prisma.greetings.findUnique({
     where: { id: greetingId },
     include: {
-      entities: true
+      entities: true,
+      buttons: true
     }
   });
 
@@ -26,7 +22,8 @@ greetindDetailsScene.enter(checkGreetingId, async (ctx) => {
     reply_markup: {
       inline_keyboard: [
         [{ text: "📝 Изменить текст", callback_data: "edit_greeting" }],
-        [{ text: "🖼 Изменить изображение", callback_data: "edit_greeting_picture" }],
+        // [{ text: "🖼 Изменить изображение", callback_data: "edit_greeting_picture" }],
+        [{ text: "🆙 Добавить кнопку", callback_data: "add_button" }],
         [{ text: "🗑️ Удалить", callback_data: "delete_greeting" }],
         [{ text: "⬅️ Назад", callback_data: "back" }],
       ]
@@ -39,6 +36,11 @@ greetindDetailsScene.enter(checkGreetingId, async (ctx) => {
     ctx.scene.state.msgWithPhotoId = msgWithPhoto.message_id;
   }
   const msg = await ctx.reply(`${currentGreeting?.text}`, {
+    reply_markup: {
+      inline_keyboard: [
+        ...(currentGreeting?.buttons?.map(button => [{ text: button.text, url: button.url }]) || [])
+      ]
+    },
     entities: currentGreeting?.entities as any,
     link_preview_options: { is_disabled: true }
   });
@@ -48,36 +50,24 @@ greetindDetailsScene.enter(checkGreetingId, async (ctx) => {
 
 greetindDetailsScene.action("edit_greeting_picture", async (ctx) => {
   // @ts-ignore
-  const { greetingId } = ctx.scene.state;
-  // @ts-ignore
-  const messagesToDelete = [ctx.msg?.message_id, ctx.scene.state?.msgId, ctx.scene.state?.msgWithPhotoId].filter(id => id !== null && id !== undefined);
-  if (messagesToDelete.length > 0) {
-    await ctx.deleteMessages(messagesToDelete);
-  }
-  await ctx.scene.enter(SceneNames.EDIT_GREETING_PICTURE_SCENE, { greetingId });
+  deleteMessages(ctx, [ctx.msg?.message_id, ctx.scene.state?.msgId, ctx.scene.state?.msgWithPhotoId]);
+  await ctx.scene.enter(SceneNames.EDIT_GREETING_PICTURE_SCENE);
 });
 
 greetindDetailsScene.action("delete_greeting", checkGreetingId, async (ctx) => {
   // @ts-ignore
   const { greetingId } = ctx.scene.state;
 
-  await prisma.greetings.delete({
-    where: {
-      id: greetingId
-    }
-  });
+  await prisma.greetings.delete({ where: { id: greetingId } });
 
   // @ts-ignore
-  const messagesToDelete = [ctx.msg?.message_id, ctx.scene.state?.msgId, ctx.scene.state?.msgWithPhotoId].filter(id => id !== null && id !== undefined);
-  if (messagesToDelete.length > 0) {
-    await ctx.deleteMessages(messagesToDelete);
-  }
+  deleteMessages(ctx, [ctx.msg?.message_id, ctx.scene.state?.msgId, ctx.scene.state?.msgWithPhotoId]);
   await ctx.reply("Приветствие успешно удалено");
   await ctx.scene.enter(SceneNames.BOT_GREETINGS_SCENE);
 });
 
 greetindDetailsScene.action("back", async (ctx) => {
   // @ts-ignore
-  await ctx.deleteMessages([ctx.msg.message_id, ctx.scene.state.msgId, ctx.scene.state.msgWithPhotoId]);
+  deleteMessages(ctx, [ctx.msg?.message_id, ctx.scene.state?.msgId, ctx.scene.state?.msgWithPhotoId]);
   await ctx.scene.enter(SceneNames.BOT_GREETINGS_SCENE);
 });

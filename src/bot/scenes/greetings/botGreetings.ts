@@ -28,9 +28,11 @@ botGreetingsScene.enter(async (ctx) => {
 
 botGreetingsScene.action(/greeting_(\w+)/, async (ctx) => {
   const greetingId = ctx.match[1];
+  // @ts-ignore
+  ctx.session.greetingId = greetingId;
 
   await ctx.deleteMessage(ctx.msg.message_id);
-  await ctx.scene.enter(SceneNames.GREETING_DETAILS_SCENE, { greetingId });
+  await ctx.scene.enter(SceneNames.GREETING_DETAILS_SCENE);
 });
 
 botGreetingsScene.action("back", async (ctx) => {

@@ -26,6 +26,7 @@ model Bot {
   telegramUser TelegramUser @relation(fields: [userId], references: [id])
   channels     Channel[]
   greetings    Greetings[]
+  isAutoApproveEnabled  Boolean @default(false)
 
   @@map("bots")
 }
@@ -51,16 +52,27 @@ model GreetingEntity {
   @@map("greeting_entities")
 }
 
+model GreetingButton {
+  id          String   @id @default(cuid())
+  greetingId  String
+  greeting    Greetings @relation(fields: [greetingId], references: [id], onDelete: Cascade)
+  text        String
+  url         String
+
+  @@map("greeting_buttons")
+}
+
 model Greetings {
   id                    String           @id @default(cuid())
   botId                 BigInt
   bot                   Bot              @relation(fields: [botId], references: [id], onDelete: Cascade)
   text                  String           @default("Hello!")
-  delay                 Int              @default(0)  // Delay in seconds
+  delayInSeconds        Int              @default(0)  // Delay in seconds
   isAutoDeleteEnabled   Boolean          @default(false)
   autoDeleteDelay       Int              @default(5)  // Auto-delete time in minutes
   imageUrl              String?
   entities      GreetingEntity[]
+  buttons       GreetingButton[]
 
   @@map("greetings")
 }

@@ -50,7 +50,8 @@ class WebhookHandler {
           botId: bot.id
         },
         include: {
-          entities: true
+          entities: true,
+          buttons: true
         }
       });
 
@@ -60,7 +61,12 @@ class WebhookHandler {
             if (greeting.imageUrl) {
               await api.sendPhoto(userId, greeting.imageUrl);
             }
-            await api.sendMessage(userId, greeting.text, greeting.entities);
+            await api.sendMessage(userId, greeting.text, {
+              entities: greeting.entities,
+              reply_markup: {
+                inline_keyboard: greeting.buttons.map(button => [{ text: button.text, url: button.url }])
+              }
+            });
           });
 
           await Promise.allSettled(asyncTasks);
