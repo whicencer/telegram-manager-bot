@@ -1,7 +1,6 @@
 import { SceneNames } from "constants/Scenes";
-import { Scene } from "../scene";
+import { SceneWithBack } from "../scene";
 import { prisma } from "database/client";
-import { deleteMessages } from "utils/deleteMessages";
 import { checkGreetingId } from "middleware/checkGreetingId";
 
 enum AddButtonSteps {
@@ -9,24 +8,21 @@ enum AddButtonSteps {
   BUTTON_URL = 1
 }
 
-export const addButtonScene = new Scene(SceneNames.ADD_BUTTON_SCENE);
+export const addButtonScene = new SceneWithBack(
+  SceneNames.ADD_BUTTON_SCENE,
+  SceneNames.GREETING_DETAILS_SCENE
+);
 
 addButtonScene.enter(checkGreetingId, async (ctx) => {
   await ctx.reply("Введите текст кнопки", {
     reply_markup: {
       inline_keyboard: [
-        [{ text: "Отмена", callback_data: "cancel" }]
+        [{ text: "Отмена", callback_data: "back" }]
       ]
     }
   });
   // @ts-ignore
   ctx.scene.session.currentStep = AddButtonSteps.BUTTON_TEXT;
-});
-
-addButtonScene.action("cancel", async (ctx) => {
-  // @ts-ignore
-  deleteMessages(ctx, [ctx.callbackQuery.message.message_id]);
-  await ctx.scene.enter(SceneNames.GREETING_DETAILS_SCENE);
 });
 
 addButtonScene.on("text", async (ctx) => {

@@ -1,10 +1,13 @@
 import { SceneNames } from "constants/Scenes";
-import { Scene } from "../scene";
+import { SceneWithBack } from "../scene";
 import { prisma } from "database/client";
 import { checkGreetingId } from "middleware/checkGreetingId";
 import { deleteMessages } from "utils/deleteMessages";
 
-export const greetindDetailsScene = new Scene(SceneNames.GREETING_DETAILS_SCENE);
+export const greetindDetailsScene = new SceneWithBack(
+  SceneNames.GREETING_DETAILS_SCENE,
+  SceneNames.BOT_GREETINGS_SCENE
+);
 
 greetindDetailsScene.enter(checkGreetingId, async (ctx) => {
   // @ts-ignore
@@ -44,6 +47,12 @@ greetindDetailsScene.enter(checkGreetingId, async (ctx) => {
   ctx.scene.state.msgId = msg.message_id;
 });
 
+greetindDetailsScene.action("edit_greeting", async (ctx) => {
+  // @ts-ignore
+  deleteMessages(ctx, [ctx.msg?.message_id, ctx.scene.state?.msgId, ctx.scene.state?.msgWithPhotoId]);
+  await ctx.scene.enter(SceneNames.EDIT_GREETING_TEXT_SCENE);
+});
+
 greetindDetailsScene.action("delete_buttons", async (ctx) => {
   // @ts-ignore
   const greetingId = ctx.session.greetingId;
@@ -77,11 +86,5 @@ greetindDetailsScene.action("delete_greeting", checkGreetingId, async (ctx) => {
   // @ts-ignore
   deleteMessages(ctx, [ctx.msg?.message_id, ctx.scene.state?.msgId, ctx.scene.state?.msgWithPhotoId]);
   await ctx.reply("Приветствие успешно удалено");
-  await ctx.scene.enter(SceneNames.BOT_GREETINGS_SCENE);
-});
-
-greetindDetailsScene.action("back", async (ctx) => {
-  // @ts-ignore
-  deleteMessages(ctx, [ctx.msg?.message_id, ctx.scene.state?.msgId, ctx.scene.state?.msgWithPhotoId]);
   await ctx.scene.enter(SceneNames.BOT_GREETINGS_SCENE);
 });

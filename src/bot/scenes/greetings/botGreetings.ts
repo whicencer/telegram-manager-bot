@@ -1,8 +1,11 @@
 import { SceneNames } from "constants/Scenes";
-import { Scene } from "../scene";
+import { SceneWithBack } from "../scene";
 import { prisma } from "database/client";
 
-export const botGreetingsScene = new Scene(SceneNames.BOT_GREETINGS_SCENE);
+export const botGreetingsScene = new SceneWithBack(
+  SceneNames.BOT_GREETINGS_SCENE,
+  SceneNames.BOT_DETAILS_SCENE
+);
 
 botGreetingsScene.enter(async (ctx) => {
   // @ts-ignore
@@ -33,11 +36,6 @@ botGreetingsScene.action(/greeting_(\w+)/, async (ctx) => {
 
   await ctx.deleteMessage(ctx.msg.message_id);
   await ctx.scene.enter(SceneNames.GREETING_DETAILS_SCENE);
-});
-
-botGreetingsScene.action("back", async (ctx) => {
-  await ctx.deleteMessage(ctx.msg.message_id);
-  await ctx.scene.enter(SceneNames.BOT_DETAILS_SCENE);
 });
 
 botGreetingsScene.action("add_greeting", async (ctx) => {

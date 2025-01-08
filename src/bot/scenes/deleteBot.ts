@@ -1,9 +1,12 @@
 import { SceneNames } from "constants/Scenes";
-import { Scene } from "./scene";
+import { SceneWithBack } from "./scene";
 import { prisma } from "database/client";
 import { TelegramAPI } from "services/telegramApi";
 
-export const deleteBotScene = new Scene(SceneNames.DELETE_BOT_SCENE);
+export const deleteBotScene = new SceneWithBack(
+  SceneNames.DELETE_BOT_SCENE,
+  SceneNames.BOT_DETAILS_SCENE
+);
 
 deleteBotScene.enter(async (ctx) => {
   await ctx.reply("Вы уверены что хотите удалить бота?", {
@@ -11,7 +14,7 @@ deleteBotScene.enter(async (ctx) => {
       inline_keyboard: [
         [
           { text: "Да", callback_data: "sure_delete" },
-          { text: "Отменить", callback_data: "cancel_delete" }
+          { text: "Отменить", callback_data: "back" }
         ]
       ]
     }
@@ -44,9 +47,4 @@ deleteBotScene.action("sure_delete", async (ctx) => {
   } catch (error) {
     console.error(error);
   }
-});
-
-deleteBotScene.action("cancel_delete", async (ctx) => {
-  await ctx.deleteMessage(ctx.msg.message_id);
-  await ctx.scene.enter(SceneNames.BOT_DETAILS_SCENE);
 });

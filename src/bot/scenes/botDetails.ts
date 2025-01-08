@@ -1,9 +1,12 @@
 import dedent from "dedent";
 import { SceneNames } from "constants/Scenes";
-import { Scene } from "./scene";
+import { SceneWithBack } from "./scene";
 import { prisma } from "database/client";
 
-export const botDetailsScene = new Scene(SceneNames.BOT_DETAILS_SCENE);
+export const botDetailsScene = new SceneWithBack(
+  SceneNames.BOT_DETAILS_SCENE,
+  SceneNames.MY_BOTS_SCENE
+);
 
 botDetailsScene.enter(async (ctx) => {
   // @ts-ignore
@@ -40,9 +43,4 @@ botDetailsScene.action('delete', async (ctx) => {
 botDetailsScene.action('greeting', async (ctx) => {
   await ctx.deleteMessage(ctx.msg.message_id);
   await ctx.scene.enter(SceneNames.BOT_GREETINGS_SCENE);
-});
-
-botDetailsScene.action("back", async (ctx) => {
-  await ctx.deleteMessage(ctx.msg.message_id);
-  await ctx.scene.enter(SceneNames.MY_BOTS_SCENE);
 });

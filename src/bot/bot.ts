@@ -13,6 +13,7 @@ import { createGreetingScene } from './scenes/greetings/createGreeting';
 import { greetindDetailsScene } from './scenes/greetings/greetingDetails';
 import { editGreetingPictureScene } from './scenes/greetings/editGreetingPicture';
 import { addButtonScene } from './scenes/greetings/addButton';
+import { editGreetingTextScene } from './scenes/greetings/editGreetingText';
 
 (() => {
 
@@ -31,6 +32,7 @@ import { addButtonScene } from './scenes/greetings/addButton';
     greetindDetailsScene,
     editGreetingPictureScene,
     addButtonScene,
+    editGreetingTextScene,
   ]);
 
   bot.use(session());

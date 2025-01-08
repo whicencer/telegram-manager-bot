@@ -1,8 +1,11 @@
 import { SceneNames } from "constants/Scenes";
-import { Scene } from "../scene";
+import { SceneWithBack } from "../scene";
 import { prisma } from "database/client";
 
-export const createGreetingScene = new Scene(SceneNames.CREATE_GREETING_SCENE);
+export const createGreetingScene = new SceneWithBack(
+  SceneNames.CREATE_GREETING_SCENE,
+  SceneNames.BOT_GREETINGS_SCENE
+);
 
 createGreetingScene.enter(async (ctx) => {
   await ctx.reply("📝 Введите текст приветствия:", {
@@ -12,11 +15,6 @@ createGreetingScene.enter(async (ctx) => {
       ]
     }
   });
-});
-
-createGreetingScene.action("back", async (ctx) => {
-  await ctx.deleteMessage(ctx.msg.message_id);
-  await ctx.scene.enter(SceneNames.BOT_GREETINGS_SCENE);
 });
 
 createGreetingScene.on("text", async (ctx) => {
