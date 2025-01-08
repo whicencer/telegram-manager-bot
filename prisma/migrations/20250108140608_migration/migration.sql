@@ -5,6 +5,8 @@ CREATE TABLE "telegram_users" (
     "username" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "hasAccessToBot" BOOLEAN NOT NULL DEFAULT false,
+    "isAdministrator" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "telegram_users_pkey" PRIMARY KEY ("id")
 );
@@ -14,7 +16,8 @@ CREATE TABLE "bots" (
     "id" BIGINT NOT NULL,
     "token" TEXT NOT NULL,
     "username" TEXT NOT NULL,
-    "userId" TEXT NOT NULL
+    "userId" TEXT NOT NULL,
+    "isAutoApproveEnabled" BOOLEAN NOT NULL DEFAULT false
 );
 
 -- CreateTable
@@ -37,13 +40,24 @@ CREATE TABLE "greeting_entities" (
 );
 
 -- CreateTable
+CREATE TABLE "greeting_buttons" (
+    "id" TEXT NOT NULL,
+    "greetingId" TEXT NOT NULL,
+    "text" TEXT NOT NULL,
+    "url" TEXT NOT NULL,
+
+    CONSTRAINT "greeting_buttons_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "greetings" (
     "id" TEXT NOT NULL,
     "botId" BIGINT NOT NULL,
-    "greetingText" TEXT NOT NULL DEFAULT 'Hello!',
-    "greetingDelay" INTEGER NOT NULL DEFAULT 0,
-    "greetingAutoDeleteEnabled" BOOLEAN NOT NULL DEFAULT false,
-    "greetingAutoDelete" INTEGER NOT NULL DEFAULT 5,
+    "text" TEXT NOT NULL DEFAULT 'Hello!',
+    "delayInSeconds" INTEGER NOT NULL DEFAULT 0,
+    "isAutoDeleteEnabled" BOOLEAN NOT NULL DEFAULT false,
+    "autoDeleteDelay" INTEGER NOT NULL DEFAULT 5,
+    "imageUrl" TEXT,
 
     CONSTRAINT "greetings_pkey" PRIMARY KEY ("id")
 );
@@ -74,6 +88,9 @@ ALTER TABLE "channels" ADD CONSTRAINT "channels_botId_fkey" FOREIGN KEY ("botId"
 
 -- AddForeignKey
 ALTER TABLE "greeting_entities" ADD CONSTRAINT "greeting_entities_greetingId_fkey" FOREIGN KEY ("greetingId") REFERENCES "greetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "greeting_buttons" ADD CONSTRAINT "greeting_buttons_greetingId_fkey" FOREIGN KEY ("greetingId") REFERENCES "greetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "greetings" ADD CONSTRAINT "greetings_botId_fkey" FOREIGN KEY ("botId") REFERENCES "bots"("id") ON DELETE CASCADE ON UPDATE CASCADE;

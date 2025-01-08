@@ -8,12 +8,17 @@ import { SceneNames } from "constants/Scenes";
 import { myBots } from "./scenes/myBots";
 import { deleteBotScene } from './scenes/deleteBot';
 import { botDetailsScene } from './scenes/botDetails';
-import { botGreetingsScene } from './scenes/greetings/botGreetings';
-import { createGreetingScene } from './scenes/greetings/createGreeting';
-import { greetindDetailsScene } from './scenes/greetings/greetingDetails';
-import { editGreetingPictureScene } from './scenes/greetings/editGreetingPicture';
-import { addButtonScene } from './scenes/greetings/addButton';
-import { editGreetingTextScene } from './scenes/greetings/editGreetingText';
+import {
+  addButtonScene,
+  botGreetingsScene,
+  createGreetingScene,
+  editGreetingPictureScene,
+  editGreetingTextScene,
+  greetindDetailsScene } from './scenes/greetings';
+import { hasAdminPermission } from 'middleware/hasAdminPermission';
+import { hasBotAccess } from 'middleware/hasBotAccess';
+import { controlPanelScene } from './scenes/admin/controlPanel';
+import { manageUsersScene } from './scenes/admin/manageUsers';
 
 (() => {
 
@@ -33,6 +38,8 @@ import { editGreetingTextScene } from './scenes/greetings/editGreetingText';
     editGreetingPictureScene,
     addButtonScene,
     editGreetingTextScene,
+    controlPanelScene,
+    manageUsersScene,
   ]);
 
   bot.use(session());
@@ -45,11 +52,14 @@ import { editGreetingTextScene } from './scenes/greetings/editGreetingText';
 
     if (existingUser) return;
 
+    const isAdministrator = ctx.from.id === parseInt(process.env.ADMIN_TELEGRAM_ID!);
+
     try {
       await prisma.telegramUser.create({
         data: {
           telegramId: ctx.from.id,
           username: ctx.from.username,
+          isAdministrator
         }
       });
     } catch (error) {
@@ -57,8 +67,12 @@ import { editGreetingTextScene } from './scenes/greetings/editGreetingText';
     }
   });
   
-  bot.command('mybots', async (ctx) => {
+  bot.command('mybots', hasBotAccess, async (ctx) => {
     await ctx.scene.enter(SceneNames.MY_BOTS_SCENE);
+  });
+
+  bot.command('admin', hasAdminPermission, async (ctx) => {
+    await ctx.scene.enter(SceneNames.ADMIN_CONTROL_PANEL_SCENE);
   });
 
   bot.launch(() => {

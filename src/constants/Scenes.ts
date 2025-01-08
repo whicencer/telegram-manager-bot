@@ -9,4 +9,6 @@ export enum SceneNames {
   EDIT_GREETING_PICTURE_SCENE = "edit_greeting_picture",
   ADD_BUTTON_SCENE = "add_button",
   EDIT_GREETING_TEXT_SCENE = "edit_greeting",
+  ADMIN_CONTROL_PANEL_SCENE = "admin_control_panel",
+  ADMIN_MANAGE_USERS_SCENE = "admin_manage_users",
 }
