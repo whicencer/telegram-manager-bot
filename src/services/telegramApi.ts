@@ -90,4 +90,17 @@ export class TelegramAPI {
       throw error;
     }
   }
+
+  async approveChatJoinRequest(chatId: string, userId: string) {
+    try {
+      const response = await axios.post(`${this.apiUrl}/approveChatJoinRequest`, {
+        chat_id: chatId,
+        user_id: userId
+      });
+      return response.data.ok;
+    } catch (error) {
+      console.error(`Telegram API Error (approveChatJoinRequest): ${error}`);
+      throw error;
+    }
+  }
 }

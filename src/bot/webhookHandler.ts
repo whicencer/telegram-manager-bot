@@ -45,6 +45,7 @@ class WebhookHandler {
 
     if (update.chat_join_request) {
       const userId = update.chat_join_request.from.id;
+      const chatId = update.chat_join_request.chat.id;
       const greetingsArray = await prisma.greetings.findMany({
         where: {
           botId: bot.id
@@ -72,6 +73,14 @@ class WebhookHandler {
           await Promise.allSettled(asyncTasks);
         } catch (error) {
           console.error('Ошибка при обработке запроса на вступление в канал:', error);
+        }
+      }
+
+      if (bot.isAutoApproveEnabled) {
+        try {
+          await api.approveChatJoinRequest(chatId, userId);
+        } catch (error) {
+          console.error('Ошибка при автоматическом принятии заявки на вступление в канал:', error);
         }
       }
     }
