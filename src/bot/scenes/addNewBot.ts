@@ -38,6 +38,7 @@ addNewBotScene.on("text", async (ctx) => {
     await ctx.scene.enter(SceneNames.MY_BOTS_SCENE);
   } catch (error: Error | any) {
     ctx.reply(`Ошибка при создании бота`);
+    ctx.scene.leave();
     console.error(error);
   }
 });

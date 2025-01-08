@@ -31,11 +31,6 @@ greetindDetailsScene.enter(checkGreetingId, async (ctx) => {
     }
   });
 
-  if (currentGreeting?.imageUrl) {
-    const msgWithPhoto = await ctx.replyWithPhoto(currentGreeting.imageUrl);
-    // @ts-ignore
-    ctx.scene.state.msgWithPhotoId = msgWithPhoto.message_id;
-  }
   const msg = await ctx.reply(`${currentGreeting?.text}`, {
     reply_markup: {
       inline_keyboard: [
@@ -51,7 +46,7 @@ greetindDetailsScene.enter(checkGreetingId, async (ctx) => {
 
 greetindDetailsScene.action("delete_buttons", async (ctx) => {
   // @ts-ignore
-  const { greetingId } = ctx.scene.state;
+  const greetingId = ctx.session.greetingId;
 
   await prisma.greetingButton.deleteMany({ where: { greetingId } });
 
@@ -75,7 +70,7 @@ greetindDetailsScene.action("edit_greeting_picture", async (ctx) => {
 
 greetindDetailsScene.action("delete_greeting", checkGreetingId, async (ctx) => {
   // @ts-ignore
-  const { greetingId } = ctx.scene.state;
+  const greetingId = ctx.session.greetingId;
 
   await prisma.greetings.delete({ where: { id: greetingId } });
 

@@ -2,6 +2,7 @@ import { SceneNames } from "constants/Scenes";
 import { Scene } from "../scene";
 import { prisma } from "database/client";
 import { deleteMessages } from "utils/deleteMessages";
+import { checkGreetingId } from "middleware/checkGreetingId";
 
 enum AddButtonSteps {
   BUTTON_TEXT = 0,
@@ -10,7 +11,7 @@ enum AddButtonSteps {
 
 export const addButtonScene = new Scene(SceneNames.ADD_BUTTON_SCENE);
 
-addButtonScene.enter(async (ctx) => {
+addButtonScene.enter(checkGreetingId, async (ctx) => {
   await ctx.reply("Введите текст кнопки", {
     reply_markup: {
       inline_keyboard: [
