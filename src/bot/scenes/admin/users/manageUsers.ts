@@ -29,7 +29,7 @@ manageUsersScene.action("users_list", async (ctx) => {
     include: {bots: true}
   });
 
-  const usersList = users.map(user => dedent`<b>ID</b>: ${user.telegramId} | <b>Username:</b> ${user.username} | <b>Количество ботов:</b> ${user.bots.length}`).join("\n");
+  const usersList = users.map(user => dedent`<b>ID</b>: ${user.telegramId} | <b>Username:</b> @${user.username} | <b>Количество ботов:</b> ${user.bots.length}`).join("\n");
   await ctx.reply(`<b>Список пользователей:</b>\n${usersList.length ? usersList : "Пользователей нет"}`, { parse_mode: "HTML" });
 });
 
