@@ -1,6 +1,7 @@
 import { SceneNames } from "constants/Scenes";
 import { SceneWithBack } from "../scene";
 import { prisma } from "database/client";
+import { Actions } from "constants/Actions";
 
 export const createGreetingScene = new SceneWithBack(
   SceneNames.CREATE_GREETING_SCENE,
@@ -11,7 +12,7 @@ createGreetingScene.enter(async (ctx) => {
   await ctx.reply("📝 Введите текст приветствия:", {
     reply_markup: {
       inline_keyboard: [
-        [{ text: "⬅️ Назад", callback_data: "back" }],
+        [{ text: "⬅️ Назад", callback_data: Actions.BACK }],
       ]
     }
   });

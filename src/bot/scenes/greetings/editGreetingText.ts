@@ -3,6 +3,7 @@ import { SceneWithBack } from "../scene";
 import { checkGreetingId } from "middleware/checkGreetingId";
 import { prisma } from "database/client";
 import { deleteMessages } from "utils/deleteMessages";
+import { Actions } from "constants/Actions";
 
 export const editGreetingTextScene = new SceneWithBack(
   SceneNames.EDIT_GREETING_TEXT_SCENE,
@@ -13,7 +14,7 @@ editGreetingTextScene.enter(checkGreetingId, async (ctx) => {
   const msg = await ctx.reply("📝 Введите новый текст приветствия", {
     reply_markup: {
       inline_keyboard: [
-        [{ text: "⬅️ Назад", callback_data: "back" }]
+        [{ text: "⬅️ Назад", callback_data: Actions.BACK }]
       ]
     }
   });

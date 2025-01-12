@@ -2,6 +2,7 @@ import { SceneNames } from "constants/Scenes";
 import { SceneWithBack } from "./scene";
 import { prisma } from "database/client";
 import { TelegramAPI } from "services/telegramApi";
+import { Actions } from "constants/Actions";
 
 export const deleteBotScene = new SceneWithBack(
   SceneNames.DELETE_BOT_SCENE,
@@ -14,7 +15,7 @@ deleteBotScene.enter(async (ctx) => {
       inline_keyboard: [
         [
           { text: "Да", callback_data: "sure_delete" },
-          { text: "Отменить", callback_data: "back" }
+          { text: "Отменить", callback_data: Actions.BACK }
         ]
       ]
     }

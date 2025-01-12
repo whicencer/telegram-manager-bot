@@ -4,6 +4,7 @@ import { SceneWithBack } from "./scene";
 import { validateTelegramBotToken } from "utils/tokenValidator";
 import { prisma } from "database/client";
 import botManager from "../botManager";
+import { Actions } from "constants/Actions";
 
 export const addNewBotScene = new SceneWithBack(
   SceneNames.ADD_NEW_BOT_SCENE,
@@ -19,7 +20,7 @@ addNewBotScene.enter(async (ctx) => {
   ctx.reply(message, {
     reply_markup: {
       inline_keyboard: [
-        [{ text: "Отмена", callback_data: "back" }]
+        [{ text: "Отмена", callback_data: Actions.BACK }]
       ]
     }
   });

@@ -3,6 +3,7 @@ import { SceneWithBack } from "../scene";
 import { prisma } from "database/client";
 import { checkGreetingId } from "middleware/checkGreetingId";
 import { deleteMessages } from "utils/deleteMessages";
+import { Actions } from "constants/Actions";
 
 export const greetindDetailsScene = new SceneWithBack(
   SceneNames.GREETING_DETAILS_SCENE,
@@ -29,7 +30,7 @@ greetindDetailsScene.enter(checkGreetingId, async (ctx) => {
         [{ text: "🆙 Добавить кнопку", callback_data: "add_button" }],
         [{ text: "❌ Удалить все кнопки", callback_data: "delete_buttons" }],
         [{ text: "🗑️ Удалить", callback_data: "delete_greeting" }],
-        [{ text: "⬅️ Назад", callback_data: "back" }],
+        [{ text: "⬅️ Назад", callback_data: Actions.BACK }],
       ]
     }
   });

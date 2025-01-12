@@ -3,6 +3,7 @@ import { SceneNames } from "constants/Scenes";
 import { SceneWithBack } from "./scene";
 import { prisma } from "database/client";
 import { deleteMessages } from "utils/deleteMessages";
+import { Actions } from "constants/Actions";
 
 export const botDetailsScene = new SceneWithBack(
   SceneNames.BOT_DETAILS_SCENE,
@@ -31,7 +32,7 @@ botDetailsScene.enter(async (ctx) => {
         [{ text: "👋 Настроить приветствие", callback_data: `greeting` }],
         [{ text: `${isAutoApproveEnabledEmoji} Автоматическое принятие заявок`, callback_data: `autoapprove` }],
         [{ text: "🗑 Удалить бота", callback_data: `delete` }],
-        [{ text: "⬅️ Назад", callback_data: `back` }],
+        [{ text: "⬅️ Назад", callback_data: Actions.BACK }],
       ]
     },
     parse_mode: 'HTML'

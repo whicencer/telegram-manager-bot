@@ -2,6 +2,7 @@ import { SceneNames } from "constants/Scenes";
 import { SceneWithBack } from "../scene";
 import { prisma } from "database/client";
 import { checkGreetingId } from "middleware/checkGreetingId";
+import { Actions } from "constants/Actions";
 
 enum AddButtonSteps {
   BUTTON_TEXT = 0,
@@ -17,7 +18,7 @@ addButtonScene.enter(checkGreetingId, async (ctx) => {
   await ctx.reply("Введите текст кнопки", {
     reply_markup: {
       inline_keyboard: [
-        [{ text: "Отмена", callback_data: "back" }]
+        [{ text: "Отмена", callback_data: Actions.BACK }]
       ]
     }
   });

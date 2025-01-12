@@ -11,4 +11,6 @@ export enum SceneNames {
   EDIT_GREETING_TEXT_SCENE = "edit_greeting",
   ADMIN_CONTROL_PANEL_SCENE = "admin_control_panel",
   ADMIN_MANAGE_USERS_SCENE = "admin_manage_users",
+  ADMIN_ADD_USER_SCENE = "admin_add_user",
+  ADMIN_DELETE_USER_SCENE = "admin_delete_user",
 }

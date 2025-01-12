@@ -1,6 +1,7 @@
 import { SceneNames } from "constants/Scenes";
 import { SceneWithBack } from "../scene";
 import { prisma } from "database/client";
+import { Actions } from "constants/Actions";
 
 export const botGreetingsScene = new SceneWithBack(
   SceneNames.BOT_GREETINGS_SCENE,
@@ -23,7 +24,7 @@ botGreetingsScene.enter(async (ctx) => {
           callback_data: `greeting_${id}`
         }])),
         [{ text: "➕ Добавить приветствие", callback_data: "add_greeting" }],
-        [{ text: "⬅️ Назад", callback_data: "back" }],
+        [{ text: "⬅️ Назад", callback_data: Actions.BACK }],
       ]
     }
   });
