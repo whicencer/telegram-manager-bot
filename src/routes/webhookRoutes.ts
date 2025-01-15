@@ -1,5 +1,5 @@
+import { handleWebhook } from 'bot/webhookHandler';
 import express from 'express';
-import webhookHandler from 'bot/webhookHandler';
 
 const router = express.Router();
 
@@ -8,7 +8,7 @@ router.post('/:botId', async (req, res) => {
   const update = req.body;
 
   try {
-    await webhookHandler.handleWebhook(Number(botId), update);
+    await handleWebhook(Number(botId), update);
     res.sendStatus(200);
   } catch (error) {
     console.error('Ошибка обработки вебхука:', error);
