@@ -13,4 +13,6 @@ export enum SceneNames {
   ADMIN_MANAGE_USERS_SCENE = "admin_manage_users",
   ADMIN_ADD_USER_SCENE = "admin_add_user",
   ADMIN_DELETE_USER_SCENE = "admin_delete_user",
+  CREATE_FAREWELL_SCENE = "create_farewell",
+  BOT_FAREWELLS_SCENE = "farewells",
 }

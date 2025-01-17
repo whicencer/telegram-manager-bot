@@ -29,9 +29,10 @@ botDetailsScene.enter(async (ctx) => {
   await ctx.reply(message, {
     reply_markup: {
       inline_keyboard: [
-        [{ text: "👋 Настроить приветствие", callback_data: `greeting` }],
-        [{ text: `${isAutoApproveEnabledEmoji} Автоматическое принятие заявок`, callback_data: `autoapprove` }],
-        [{ text: "🗑 Удалить бота", callback_data: `delete` }],
+        [{ text: "👋 Настроить приветствие", callback_data: "greeting" }],
+        [{ text: "🫂 Настроить прощание", callback_data: "farewell" }],
+        [{ text: `${isAutoApproveEnabledEmoji} Автоматическое принятие заявок`, callback_data: "autoapprove" }],
+        [{ text: "🗑 Удалить бота", callback_data: "delete" }],
         [{ text: "⬅️ Назад", callback_data: Actions.BACK }],
       ]
     },
@@ -76,4 +77,9 @@ botDetailsScene.action('delete', async (ctx) => {
 botDetailsScene.action('greeting', async (ctx) => {
   await ctx.deleteMessage(ctx.msg.message_id);
   await ctx.scene.enter(SceneNames.BOT_GREETINGS_SCENE);
+});
+
+botDetailsScene.action('farewell', async (ctx) => {
+  await ctx.deleteMessage(ctx.msg.message_id);
+  await ctx.scene.enter(SceneNames.BOT_FAREWELLS_SCENE);
 });

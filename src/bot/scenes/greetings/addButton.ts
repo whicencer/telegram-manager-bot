@@ -44,7 +44,7 @@ addButtonScene.on("text", async (ctx) => {
     case AddButtonSteps.BUTTON_URL: {
       // @ts-ignore
       ctx.scene.session.buttonUrl = ctx.message.text;
-      await prisma.greetingButton.create({
+      await prisma.button.create({
         data: {
           // @ts-ignore
           text: ctx.scene.session.buttonText,

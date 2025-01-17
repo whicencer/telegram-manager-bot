@@ -15,6 +15,7 @@ import {
   editGreetingPictureScene,
   editGreetingTextScene,
   greetindDetailsScene } from './scenes/greetings';
+import { botFarewellsScene, createFarewellScene } from './scenes/farewells';
 import { hasAdminPermission } from 'middleware/hasAdminPermission';
 import { hasBotAccess } from 'middleware/hasBotAccess';
 import { addUserScene, controlPanelScene, manageUsersScene } from './scenes/admin';
@@ -41,7 +42,9 @@ import { deleteUserScene } from './scenes/admin/users/deleteUser';
     controlPanelScene,
     manageUsersScene,
     addUserScene,
-    deleteUserScene
+    deleteUserScene,
+    botFarewellsScene,
+    createFarewellScene
   ]);
 
   bot.use(session());

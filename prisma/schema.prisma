@@ -28,6 +28,7 @@ model Bot {
   telegramUser TelegramUser @relation(fields: [userId], references: [id])
   channels     Channel[]
   greetings    Greetings[]
+  leavings     Leavings[]
   isAutoApproveEnabled  Boolean @default(false)
 
   @@map("bots")
@@ -42,26 +43,30 @@ model Channel {
   @@map("channels")
 }
 
-model GreetingEntity {
+model Entity {
   id          String   @id @default(cuid())
-  greetingId  String
-  greeting    Greetings @relation(fields: [greetingId], references: [id], onDelete: Cascade)
+  greetingId  String?
+  leavingId   String?
+  greetings   Greetings? @relation(fields: [greetingId], references: [id], onDelete: Cascade)
+  leavings    Leavings? @relation(fields: [leavingId], references: [id], onDelete: Cascade)
   offset      Int
   length      Int
   type        String
   url         String?
 
-  @@map("greeting_entities")
+  @@map("entities")
 }
 
-model GreetingButton {
+model Button {
   id          String   @id @default(cuid())
-  greetingId  String
-  greeting    Greetings @relation(fields: [greetingId], references: [id], onDelete: Cascade)
+  greetingId  String?
+  leavingId   String?
+  greetings   Greetings? @relation(fields: [greetingId], references: [id], onDelete: Cascade)
+  leavings    Leavings? @relation(fields: [leavingId], references: [id], onDelete: Cascade)
   text        String
   url         String
 
-  @@map("greeting_buttons")
+  @@map("buttons")
 }
 
 model Greetings {
@@ -73,8 +78,23 @@ model Greetings {
   isAutoDeleteEnabled   Boolean          @default(false)
   autoDeleteDelay       Int              @default(5)  // Auto-delete time in minutes
   imageUrl              String?
-  entities      GreetingEntity[]
-  buttons       GreetingButton[]
+  entities              Entity[]
+  buttons               Button[]
 
   @@map("greetings")
+}
+
+model Leavings {
+  id                    String           @id @default(cuid())
+  botId                 BigInt
+  bot                   Bot              @relation(fields: [botId], references: [id], onDelete: Cascade)
+  text                  String           @default("Hello!")
+  delayInSeconds        Int              @default(0)  // Delay in seconds
+  isAutoDeleteEnabled   Boolean          @default(false)
+  autoDeleteDelay       Int              @default(5)  // Auto-delete time in minutes
+  imageUrl              String?
+  entities              Entity[]
+  buttons               Button[]
+
+  @@map("leavings")
 }

@@ -58,7 +58,7 @@ greetindDetailsScene.action("delete_buttons", async (ctx) => {
   // @ts-ignore
   const greetingId = ctx.session.greetingId;
 
-  await prisma.greetingButton.deleteMany({ where: { greetingId } });
+  await prisma.button.deleteMany({ where: { greetingId } });
 
   // @ts-ignore
   deleteMessages(ctx, [ctx.msg?.message_id, ctx.scene.state?.msgId, ctx.scene.state?.msgWithPhotoId]);

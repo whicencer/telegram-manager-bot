@@ -19,12 +19,35 @@ export class WebhookHandler {
   async handleChatMember() {
     const userId = this.update.chat_member.from.id;
     const status = this.update.chat_member.new_chat_member.status;
-
     if (status === ChatMemberStatuses.LEFT) {
-      try {
-        await this.api.sendMessage(userId, 'Прощательное сообщение.');
-      } catch (error) {
-        console.error('Ошибка при отправке сообщения:', error);
+      const leavingMessages = await prisma.leavings.findMany({
+        where: {
+          botId: this.bot.id
+        },
+        include: {
+          entities: true,
+          buttons: true
+        }
+      });
+
+      if (leavingMessages.length > 0) {
+        try {
+          const asyncTasks = leavingMessages.map(async leavingMessage => {
+            if (leavingMessage.imageUrl) {
+              await this.api.sendPhoto(userId, leavingMessage.imageUrl);
+            }
+            await this.api.sendMessage(userId, leavingMessage.text, {
+              entities: leavingMessage.entities,
+              reply_markup: {
+                inline_keyboard: leavingMessage.buttons.map(button => [{ text: button.text, url: button.url }])
+              }
+            });
+          });
+
+          await Promise.allSettled(asyncTasks);
+        } catch (error) {
+          console.error('Ошибка при отправке сообщения:', error);
+        }
       }
     }
   }

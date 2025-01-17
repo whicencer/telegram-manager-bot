@@ -28,25 +28,27 @@ CREATE TABLE "channels" (
 );
 
 -- CreateTable
-CREATE TABLE "greeting_entities" (
+CREATE TABLE "entities" (
     "id" TEXT NOT NULL,
-    "greetingId" TEXT NOT NULL,
+    "greetingId" TEXT,
+    "leavingId" TEXT,
     "offset" INTEGER NOT NULL,
     "length" INTEGER NOT NULL,
     "type" TEXT NOT NULL,
     "url" TEXT,
 
-    CONSTRAINT "greeting_entities_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "entities_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "greeting_buttons" (
+CREATE TABLE "buttons" (
     "id" TEXT NOT NULL,
-    "greetingId" TEXT NOT NULL,
+    "greetingId" TEXT,
+    "leavingId" TEXT,
     "text" TEXT NOT NULL,
     "url" TEXT NOT NULL,
 
-    CONSTRAINT "greeting_buttons_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "buttons_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -60,6 +62,19 @@ CREATE TABLE "greetings" (
     "imageUrl" TEXT,
 
     CONSTRAINT "greetings_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "leavings" (
+    "id" TEXT NOT NULL,
+    "botId" BIGINT NOT NULL,
+    "text" TEXT NOT NULL DEFAULT 'Hello!',
+    "delayInSeconds" INTEGER NOT NULL DEFAULT 0,
+    "isAutoDeleteEnabled" BOOLEAN NOT NULL DEFAULT false,
+    "autoDeleteDelay" INTEGER NOT NULL DEFAULT 5,
+    "imageUrl" TEXT,
+
+    CONSTRAINT "leavings_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -87,10 +102,19 @@ ALTER TABLE "bots" ADD CONSTRAINT "bots_userId_fkey" FOREIGN KEY ("userId") REFE
 ALTER TABLE "channels" ADD CONSTRAINT "channels_botId_fkey" FOREIGN KEY ("botId") REFERENCES "bots"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "greeting_entities" ADD CONSTRAINT "greeting_entities_greetingId_fkey" FOREIGN KEY ("greetingId") REFERENCES "greetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "entities" ADD CONSTRAINT "entities_greetingId_fkey" FOREIGN KEY ("greetingId") REFERENCES "greetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "greeting_buttons" ADD CONSTRAINT "greeting_buttons_greetingId_fkey" FOREIGN KEY ("greetingId") REFERENCES "greetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "entities" ADD CONSTRAINT "entities_leavingId_fkey" FOREIGN KEY ("leavingId") REFERENCES "leavings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "buttons" ADD CONSTRAINT "buttons_greetingId_fkey" FOREIGN KEY ("greetingId") REFERENCES "greetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "buttons" ADD CONSTRAINT "buttons_leavingId_fkey" FOREIGN KEY ("leavingId") REFERENCES "leavings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "greetings" ADD CONSTRAINT "greetings_botId_fkey" FOREIGN KEY ("botId") REFERENCES "bots"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "leavings" ADD CONSTRAINT "leavings_botId_fkey" FOREIGN KEY ("botId") REFERENCES "bots"("id") ON DELETE CASCADE ON UPDATE CASCADE;
