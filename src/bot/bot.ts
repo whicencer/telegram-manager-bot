@@ -25,6 +25,7 @@ import { hasAdminPermission } from 'middleware/hasAdminPermission';
 import { hasBotAccess } from 'middleware/hasBotAccess';
 import { addUserScene, controlPanelScene, manageUsersScene } from './scenes/admin';
 import { deleteUserScene } from './scenes/admin/users/deleteUser';
+import { connectedChannelsScene } from './scenes/channels';
 
 (() => {
 
@@ -52,7 +53,8 @@ import { deleteUserScene } from './scenes/admin/users/deleteUser';
     createFarewellScene,
     farewellDetailsScene,
     editFarewellText,
-    farewellAddButtonScene
+    farewellAddButtonScene,
+    connectedChannelsScene
   ]);
 
   bot.use(session());

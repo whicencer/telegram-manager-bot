@@ -32,6 +32,7 @@ botDetailsScene.enter(async (ctx) => {
         [{ text: "👋 Настроить приветствие", callback_data: "greeting" }],
         [{ text: "🫂 Настроить прощание", callback_data: "farewell" }],
         [{ text: `${isAutoApproveEnabledEmoji} Автоматическое принятие заявок`, callback_data: "autoapprove" }],
+        [{ text: "🔌 Подключенные каналы", callback_data: "connected_channels" }],
         [{ text: "🗑 Удалить бота", callback_data: "delete" }],
         [{ text: "⬅️ Назад", callback_data: Actions.BACK }],
       ]
@@ -82,4 +83,9 @@ botDetailsScene.action('greeting', async (ctx) => {
 botDetailsScene.action('farewell', async (ctx) => {
   await ctx.deleteMessage(ctx.msg.message_id);
   await ctx.scene.enter(SceneNames.BOT_FAREWELLS_SCENE);
+});
+
+botDetailsScene.action('connected_channels', async (ctx) => {
+  await ctx.deleteMessage(ctx.msg.message_id);
+  await ctx.scene.enter(SceneNames.CONNECTED_CHANNELS_SCENE);
 });

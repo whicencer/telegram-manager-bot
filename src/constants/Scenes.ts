@@ -18,4 +18,5 @@ export enum SceneNames {
   FAREWELL_DETAILS_SCENE = "farewell_details",
   EDIT_FAREWELL_TEXT_SCENE = "edit_farewell_text",
   FAREWELL_ADD_BUTTON_SCENE = "farewell_add_button",
+  CONNECTED_CHANNELS_SCENE = "connected_channels",
 }

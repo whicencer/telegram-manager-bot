@@ -17,14 +17,20 @@ CREATE TABLE "bots" (
     "token" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "isAutoApproveEnabled" BOOLEAN NOT NULL DEFAULT false
+    "isAutoApproveEnabled" BOOLEAN NOT NULL DEFAULT false,
+    "totalUsers" INTEGER NOT NULL DEFAULT 0,
+    "totalDeadUsers" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable
 CREATE TABLE "channels" (
     "id" BIGINT NOT NULL,
     "title" TEXT NOT NULL,
-    "botId" BIGINT NOT NULL
+    "botId" BIGINT NOT NULL,
+    "joinedUsers" INTEGER NOT NULL DEFAULT 0,
+    "leavedUsers" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable
