@@ -15,4 +15,7 @@ export enum SceneNames {
   ADMIN_DELETE_USER_SCENE = "admin_delete_user",
   CREATE_FAREWELL_SCENE = "create_farewell",
   BOT_FAREWELLS_SCENE = "farewells",
+  FAREWELL_DETAILS_SCENE = "farewell_details",
+  EDIT_FAREWELL_TEXT_SCENE = "edit_farewell_text",
+  FAREWELL_ADD_BUTTON_SCENE = "farewell_add_button",
 }

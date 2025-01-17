@@ -40,6 +40,6 @@ createFarewellScene.on("text", async (ctx) => {
     await ctx.reply("❌ Произошла ошибка при сохранении прощания");
     console.error(error);
   } finally {
-    await ctx.scene.enter(SceneNames.BOT_DETAILS_SCENE);
+    await ctx.scene.enter(SceneNames.BOT_FAREWELLS_SCENE);
   }
 });

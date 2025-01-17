@@ -16,7 +16,7 @@ botFarewellsScene.enter(async (ctx) => {
     where: { botId }
   });
 
-  await ctx.reply("Настройка прощаний", {
+  await ctx.reply("🫂 Настройка прощаний", {
     reply_markup: {
       inline_keyboard: [
         ...leavings.map(({ id, text }) => {
@@ -35,4 +35,12 @@ botFarewellsScene.enter(async (ctx) => {
 botFarewellsScene.action("create", async (ctx) => {
   await ctx.deleteMessage(ctx.msg.message_id);
   await ctx.scene.enter(SceneNames.CREATE_FAREWELL_SCENE);
+});
+
+botFarewellsScene.action(/farewell_(\w+)/, async (ctx) => {
+  // @ts-ignore
+  ctx.session.farewellId = ctx.match[1];
+
+  await ctx.deleteMessage(ctx.msg.message_id);
+  await ctx.scene.enter(SceneNames.FAREWELL_DETAILS_SCENE);
 });
