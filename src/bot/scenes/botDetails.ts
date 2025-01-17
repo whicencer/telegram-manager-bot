@@ -29,8 +29,10 @@ botDetailsScene.enter(async (ctx) => {
   await ctx.reply(message, {
     reply_markup: {
       inline_keyboard: [
-        [{ text: "👋 Настроить приветствие", callback_data: "greeting" }],
-        [{ text: "🫂 Настроить прощание", callback_data: "farewell" }],
+        [
+          { text: "👋 Приветствия", callback_data: "greeting" },
+          { text: "🫂 Прощания", callback_data: "farewell" }
+        ],
         [{ text: `${isAutoApproveEnabledEmoji} Автоматическое принятие заявок`, callback_data: "autoapprove" }],
         [{ text: "🔌 Подключенные каналы", callback_data: "connected_channels" }],
         [{ text: "🗑 Удалить бота", callback_data: "delete" }],
