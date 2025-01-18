@@ -25,7 +25,8 @@ import { hasAdminPermission } from 'middleware/hasAdminPermission';
 import { hasBotAccess } from 'middleware/hasBotAccess';
 import { addUserScene, controlPanelScene, manageUsersScene } from './scenes/admin';
 import { deleteUserScene } from './scenes/admin/users/deleteUser';
-import { connectedChannelsScene } from './scenes/channels';
+import { connectedChannelsScene, channelDetailsScene } from './scenes/channels';
+import { postSettingsScene, publishPostScene } from './scenes/channels/posting';
 
 (() => {
 
@@ -54,7 +55,10 @@ import { connectedChannelsScene } from './scenes/channels';
     farewellDetailsScene,
     editFarewellText,
     farewellAddButtonScene,
-    connectedChannelsScene
+    connectedChannelsScene,
+    channelDetailsScene,
+    publishPostScene,
+    postSettingsScene
   ]);
 
   bot.use(session());

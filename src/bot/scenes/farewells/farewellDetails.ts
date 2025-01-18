@@ -3,13 +3,14 @@ import { SceneWithBack } from "../scene";
 import { prisma } from "database/client";
 import { Actions } from "constants/Actions";
 import { deleteMessages } from "utils/deleteMessages";
+import { checkFarewellId } from "middleware/checkFarewellId";
 
 export const farewellDetailsScene = new SceneWithBack(
   SceneNames.FAREWELL_DETAILS_SCENE,
   SceneNames.BOT_FAREWELLS_SCENE
 );
 
-farewellDetailsScene.enter(async (ctx) => {
+farewellDetailsScene.enter(checkFarewellId, async (ctx) => {
   // @ts-ignore
   const farewellId = ctx.session.farewellId;
 
