@@ -13,6 +13,7 @@
   "dependencies": {
     "@prisma/client": "^6.1.0",
     "axios": "^1.7.9",
+    "bullmq": "^5.34.10",
     "dedent": "^1.5.3",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
@@ -36,6 +37,8 @@
     "routes": "src/routes",
     "services": "src/services",
     "types": "src/types",
-    "utils": "src/utils"
+    "utils": "src/utils",
+    "workers": "src/workers",
+    "config": "src/config"
   }
 }

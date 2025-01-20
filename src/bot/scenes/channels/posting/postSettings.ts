@@ -2,8 +2,8 @@ import { SceneWithBack } from "bot/scenes/scene";
 import { Actions } from "constants/Actions";
 import { SceneNames } from "constants/Scenes";
 import { prisma } from "database/client";
-import { TelegramAPI } from "services/telegramApi";
 import { deleteMessages } from "utils/deleteMessages";
+import { createMessageJob } from "workers/PostingWorker";
 
 export const postSettingsScene = new SceneWithBack(
   SceneNames.CHANNEL_PUBLISH_POST_SETTINGS_SCENE,
@@ -12,7 +12,7 @@ export const postSettingsScene = new SceneWithBack(
 
 postSettingsScene.enter(async (ctx) => {
   // @ts-ignore
-  const { text, entities, buttonText, buttonUrl } = ctx.scene.state;
+  const { text, entities, buttonText, buttonUrl, delay } = ctx.scene.state;
 
   if (!text) {
     await ctx.reply("Текст поста не может быть пустым.");
@@ -24,6 +24,7 @@ postSettingsScene.enter(async (ctx) => {
       inline_keyboard: [
         [{ text: "📢 Опубликовать", callback_data: "publish" }],
         [{ text: "📝 Изменить текст", callback_data: "change_text" }],
+        [{ text: "⌛️ Добавить задержку", callback_data: "add_delay" }],
         [{ text: "➕ Добавить кнопку", callback_data: "add_button" }],
         [{ text: "❌ Удалить все кнопки", callback_data: "remove_buttons" }],
         [{ text: "⬅️ Назад", callback_data: Actions.BACK }]
@@ -31,7 +32,7 @@ postSettingsScene.enter(async (ctx) => {
     }
   });
 
-  const msg = await ctx.reply(text, {
+  const msg = await ctx.reply(`${text}\nЗадержка: ${delay || 0} сек.`, {
     entities,
     reply_markup: {
       inline_keyboard: buttonText && buttonUrl ? [
@@ -50,11 +51,30 @@ postSettingsScene.action("change_text", async (ctx) => {
   await ctx.scene.enter(SceneNames.CHANNEL_PUBLISH_POST_SCENE);
 });
 
+postSettingsScene.action("add_delay", async (ctx) => {
+  const message = 'Отправьте задержку в секундах';
+  // @ts-ignore
+  await deleteMessages(ctx, [ctx.scene.state.msgId, ctx.callbackQuery.message?.message_id]);
+  await ctx.reply(message, {
+    reply_markup: {
+      inline_keyboard: [[{ text: "⬅️ Назад", callback_data: "cancel_action" }]]
+    }
+  });
+
+  // @ts-ignore
+  ctx.scene.state.awaitingDelay = true;
+});
+
 postSettingsScene.action("add_button", async (ctx) => {
   const message = 'Отправьте текст кнопки и URL в формате:\n<code>Button Text\nhttps://buttonurl.com</code>';
   // @ts-ignore
   await deleteMessages(ctx, [ctx.scene.state.msgId, ctx.callbackQuery.message?.message_id]);
-  await ctx.reply(message, { parse_mode: 'HTML' });
+  await ctx.reply(message, {
+    reply_markup: {
+      inline_keyboard: [[{ text: "⬅️ Назад", callback_data: "cancel_action" }]]
+    },
+    parse_mode: 'HTML'
+  });
 
   // @ts-ignore
   ctx.scene.state.awaitingButtonText = true;
@@ -71,6 +91,12 @@ postSettingsScene.on("text", async (ctx) => {
     ctx.scene.state.buttonUrl = buttonUrl;
     // @ts-ignore
     ctx.scene.state.awaitingButtonText = false;
+  // @ts-ignore
+  } else if (ctx.scene.state.awaitingDelay) {
+    // @ts-ignore
+    ctx.scene.state.delay = parseInt(ctx.message.text);
+    // @ts-ignore
+    ctx.scene.state.awaitingDelay = false;
   }
 
   await ctx.scene.reenter();
@@ -93,7 +119,7 @@ postSettingsScene.action("publish", async (ctx) => {
   // @ts-ignore
   const botId = ctx.session.botId;
   // @ts-ignore
-  const { text, entities, buttonText, buttonUrl } = ctx.scene.state;
+  const { text, entities, buttonText, buttonUrl, delay } = ctx.scene.state;
 
   const bot = await prisma.bot.findUnique({ where: { id: botId } });
   if (!bot) {
@@ -102,16 +128,15 @@ postSettingsScene.action("publish", async (ctx) => {
   }
 
   try {
-    const api = new TelegramAPI(bot.token);
-    await api.sendMessage(channelId, text, {
-      entities,
-      reply_markup: {
-        inline_keyboard: buttonText && buttonUrl ? [
-          [{ text: buttonText, url: buttonUrl }]
-        ] : []
+    await createMessageJob(
+      {
+        text,
+        entities,
+        buttonText,
+        buttonUrl
       },
-      disable_web_page_preview: true,
-    });
+      channelId, bot.token, delay || 0
+    );
 
     // @ts-ignore
     await deleteMessages(ctx, [ctx.scene.state.msgId, ctx.callbackQuery.message?.message_id]);
@@ -122,4 +147,10 @@ postSettingsScene.action("publish", async (ctx) => {
   } finally {
     await ctx.scene.enter(SceneNames.CHANNEL_DETAILS_SCENE);
   }
+});
+
+postSettingsScene.action("cancel_action", async (ctx) => {
+  // @ts-ignore
+  await deleteMessages(ctx, [ctx.scene.state.msgId, ctx.callbackQuery.message?.message_id]);
+  await ctx.scene.reenter();
 });
