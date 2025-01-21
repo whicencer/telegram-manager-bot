@@ -4,3 +4,4 @@ export * from "./createGreeting";
 export * from "./editGreetingPicture";
 export * from "./editGreetingText";
 export * from "./greetingDetails";
+export * from "./editGreetingDelay";

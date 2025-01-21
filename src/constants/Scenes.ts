@@ -6,6 +6,7 @@ export enum SceneNames {
   BOT_GREETINGS_SCENE = "bot_greetings",
   CREATE_GREETING_SCENE = "create_greeting",
   GREETING_DETAILS_SCENE = "greeting_details",
+  EDIT_GREETING_DELAY_SCENE = "edit_greeting_delay",
   EDIT_GREETING_PICTURE_SCENE = "edit_greeting_picture",
   ADD_BUTTON_SCENE = "add_button",
   EDIT_GREETING_TEXT_SCENE = "edit_greeting",

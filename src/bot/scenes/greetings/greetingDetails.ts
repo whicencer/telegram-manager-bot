@@ -27,6 +27,7 @@ greetindDetailsScene.enter(checkGreetingId, async (ctx) => {
       inline_keyboard: [
         [{ text: "📝 Изменить текст", callback_data: "edit_greeting" }],
         // [{ text: "🖼 Изменить изображение", callback_data: "edit_greeting_picture" }],
+        [{ text: "⏳ Изменить задержку", callback_data: "edit_send_delay" }],
         [{ text: "🆙 Добавить кнопку", callback_data: "add_button" }],
         [{ text: "❌ Удалить все кнопки", callback_data: "delete_buttons" }],
         [{ text: "🗑️ Удалить", callback_data: "delete_greeting" }],
@@ -88,4 +89,10 @@ greetindDetailsScene.action("delete_greeting", checkGreetingId, async (ctx) => {
   deleteMessages(ctx, [ctx.msg?.message_id, ctx.scene.state?.msgId, ctx.scene.state?.msgWithPhotoId]);
   await ctx.reply("Приветствие успешно удалено");
   await ctx.scene.enter(SceneNames.BOT_GREETINGS_SCENE);
+});
+
+greetindDetailsScene.action("edit_send_delay", async (ctx) => {
+  // @ts-ignore
+  deleteMessages(ctx, [ctx.msg?.message_id, ctx.scene.state?.msgId, ctx.scene.state?.msgWithPhotoId]);
+  await ctx.scene.enter(SceneNames.EDIT_GREETING_DELAY_SCENE);
 });

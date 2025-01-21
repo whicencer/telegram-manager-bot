@@ -2,8 +2,8 @@ import { SceneWithBack } from "bot/scenes/scene";
 import { Actions } from "constants/Actions";
 import { SceneNames } from "constants/Scenes";
 import { prisma } from "database/client";
+import { TelegramAPI } from "services/telegramApi";
 import { deleteMessages } from "utils/deleteMessages";
-import { createMessageJob } from "workers/PostingWorker";
 
 export const postSettingsScene = new SceneWithBack(
   SceneNames.CHANNEL_PUBLISH_POST_SETTINGS_SCENE,
@@ -128,15 +128,16 @@ postSettingsScene.action("publish", async (ctx) => {
   }
 
   try {
-    await createMessageJob(
-      {
-        text,
-        entities,
-        buttonText,
-        buttonUrl
+    const api = new TelegramAPI(bot.token);
+    await api.sendMessage(channelId, text, {
+      entities: entities,
+      reply_markup: {
+        inline_keyboard: buttonText && buttonUrl ? [
+          [{ text: buttonText, url: buttonUrl }]
+        ] : []
       },
-      channelId, bot.token, delay || 0
-    );
+      disable_web_page_preview: true,
+    });
 
     // @ts-ignore
     await deleteMessages(ctx, [ctx.scene.state.msgId, ctx.callbackQuery.message?.message_id]);

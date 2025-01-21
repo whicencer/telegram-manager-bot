@@ -13,6 +13,7 @@ import {
   botGreetingsScene,
   createGreetingScene,
   editGreetingPictureScene,
+  editGreetingsDelayScene,
   editGreetingTextScene,
   greetindDetailsScene } from './scenes/greetings';
 import {
@@ -46,6 +47,7 @@ import { postSettingsScene, publishPostScene } from './scenes/channels/posting';
     editGreetingPictureScene,
     addButtonScene,
     editGreetingTextScene,
+    editGreetingsDelayScene,
     controlPanelScene,
     manageUsersScene,
     addUserScene,
